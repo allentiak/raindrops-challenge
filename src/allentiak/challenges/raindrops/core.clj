@@ -1,6 +1,10 @@
 (ns allentiak.challenges.raindrops.core
   (:gen-class))
 
+(defn raindrops
+  [n]
+  n)
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]

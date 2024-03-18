@@ -4,5 +4,12 @@
    [expectations.clojure.test :refer [defexpect expect expecting]]))
 
 (defexpect core-should
-    (expecting "put 2 and 2 together :)"
-          (expect (= (+ 2 2) 4))))
+    (expecting "base cases"
+               (expect (= (sut/raindrops 2) "pling"))
+               (expect (= (sut/raindrops 3) "plang"))
+               (expect (= (sut/raindrops 5) "plong"))
+               (expect (= (sut/raindrops 17) "tshäng")))
+
+    (expecting "other base cases"
+               ;; for all integers from 1 to +infinite, except 2,3,5,17...
+               (expect (= (sut/raindrops 1) "blob"))))
