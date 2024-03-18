@@ -11,5 +11,5 @@
                (expect (= (sut/raindrops 17) "tshäng")))
 
     (expecting "other base cases"
-               ;; for all integers from 1 to +infinite, except 2,3,5,17...
+               ;; for all integers from 1 to +infinite, except 2,3,5,and 17...
                (expect (= (sut/raindrops 1) "blob"))))

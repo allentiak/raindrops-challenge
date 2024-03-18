@@ -3,7 +3,13 @@
 
 (defn raindrops
   [n]
-  n)
+  (cond
+    (= (mod n 2) 0) "pling"
+    (= (mod n 3) 0) "plang"
+    (= (mod n 5) 0) "plong"
+    (= (mod n 17) 0) "tshäng"
+    :else "blob"))
+
 
 (defn -main
   "I don't do a whole lot ... yet."
