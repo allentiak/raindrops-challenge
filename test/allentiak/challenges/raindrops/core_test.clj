@@ -13,7 +13,7 @@
   [test-fn]
   (mi/collect!)
   (mi/instrument!)
-  (f))
+  (test-fn))
 
 (def valid-strings
   (m/schema
