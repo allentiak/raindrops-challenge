@@ -13,15 +13,16 @@
   (zero? (mod n divisor)))
 
 (defn- divisible-by-many?
-  "given an integer and a vector of integer divisors, returns a vector with the result of applying 'divisible?' to the integer and each of the elements of the vector"
-  [n divisors]
-  (let [ns (take (count divisors) (repeat n))]
+  "given an integer and a map of special cases '{:divisor canned-response}', returns a vector with the result of applying 'divisible?' to the integer and each of the elements of the vector"
+  [n divisors-map]
+  (let [divisors (map (comp parse-long name) (keys divisors-map))
+        ns (take (count divisors-map) (repeat n))]
     (map divisible? ns divisors)))
 
 (comment
   (take 3 (repeat 2))
   ;; => (2 2 2)
-  (divisible-by-many? 119 [2 3 5 17])
+  (divisible-by-many? 119 special-cases)
   ;; => (false false false true)
   ,)
 
