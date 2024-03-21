@@ -7,6 +7,25 @@
    :5 "plong"
    :17 "tshäng"})
 
+(defn- divisible?
+  "given an integer and an integer divisor, returns whether the number is divisible by the divisor"
+  [n divisor]
+  (zero? (mod n divisor)))
+
+(defn- divisible-by-many?
+  "given an integer and a vector of integer divisors, returns a vector with the result of applying 'divisible?' to the integer and each of the elements of the vector"
+  [n divisors]
+  (let [ns (take (count divisors) (repeat n))]
+    (map divisible? ns divisors)))
+
+(comment
+  (take 3 (repeat 2))
+  ;; => (2 2 2)
+  (divisible-by-many? 119 [2 3 5 17])
+  ;; => (false false false true)
+  ,)
+
+
 (comment
   (:2 special-cases))
   ;; => "pling"
