@@ -15,4 +15,10 @@
     ;; that are not divisible by any of the base case numbers
              (expect (= (sut/raindrops 1) "blob"))
              (expect (= (sut/raindrops 7) "blob"))
-             (expect (= (sut/raindrops 113) "blob"))))
+             (expect (= (sut/raindrops 113) "blob")))
+
+  (expecting "more base cases"
+             (expect (= (sut/raindrops 4) "pling"))
+             (expect (= (sut/raindrops 9) "plang"))
+             (expect (= (sut/raindrops 25) "plong"))
+             (expect (= (sut/raindrops 119) "tshäng"))))
