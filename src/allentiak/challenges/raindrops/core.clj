@@ -50,16 +50,16 @@
   ,)
 
 (defn- divisible-cases
-  "given a positive integer and an seq of SpecialCase's, return only the SpecialCases to which the integer is divisible by"
+  "given a positive integer and an seq of SpecialCase's, return a seq of Answers, consisting in only the fields ':divisor', ':output', and ':times-divisible' of the SpecialCases to which the integer is divisible by"
   [n special-cases]
   (let [augmented-special-cases (augment-special-cases n special-cases)]
-    (filter :divisible augmented-special-cases)))
+    (map #(dissoc % :divisible) (filter :divisible augmented-special-cases))))
 
 (comment
   (divisible-cases 4 special-cases)
-;; => ({:divisor 2, :output "pling", :divisible true, :times-divisible 2})
+;; => ({:divisor 2, :output "pling", :times-divisible 2})
   (divisible-cases 6 special-cases)
-;; => ({:divisor 2, :output "pling", :divisible true, :times-divisible 3} {:divisor 3, :output "plang", :divisible true, :times-divisible 2})
+;; => ({:divisor 2, :output "pling", :times-divisible 3} {:divisor 3, :output "plang", :times-divisible 2})
   :end)
 
 (def ^:private canned-response
