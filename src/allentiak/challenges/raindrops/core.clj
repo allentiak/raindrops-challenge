@@ -8,7 +8,8 @@
      {:divisor 3 :output "plang"}
      {:divisor 5 :output "plong"}
      {:divisor 17 :output "tshäng"}}
-   :default-output "blob"
+   :default-output-fn
+   (constantly "blob")
    :transformation-fns
    [`first-transformation
     `second-transformation
@@ -104,28 +105,43 @@
   "given a natural integer, produce a specific sound for special cases, and 'blob' for the rest"
   ([n]
    (raindrops n problem))
-  ([n {:keys [special-cases default-output] :as problem-map}]
+  ([n {:keys [special-cases default-output-fn] :as problem-map}]
    (if-let [answers (not-empty (divisible-cases n special-cases))]
      (apply str (interpose ", " (map :output answers)))
-     default-output)))
+     (default-output-fn n))))
 
 (comment
+  ;; it can even mimic a fizzbuzz!
+  (let [new-problem-map (assoc problem :default-output-fn identity)]
+    (raindrops 1 new-problem-map))
+  ;; => 1
+
+  ;; or anything else...
+  (let [new-problem-map (assoc problem :default-output-fn inc)]
+    (raindrops 1 new-problem-map))
+  ;; => 2
+
+  (:default-output-fn problem)
+  ;; => #function[clojure.core/constantly/fn--5740]
+  ((constantly "blob"))
+  ;; => "blob"
+  (def m {:fn (constantly "abc")})
+  ((:fn m))
+  ;; => "abc"
+  (raindrops 1)
+  ;; => "blob"
   (raindrops 2)
   ;; => "pling"
+  (raindrops 10)
+  ;; => "pling, plong"
   (if () "y" "n")
   ;; => "y"
   (if (not-empty ()) "y" "n")
   ;; => "n"
   (not-empty (divisible-cases 510 special-cases))
-;; => ({:divisor 2, :output "pling", :times-divisible 255} {:divisor 3, :output "plang", :times-divisible 170} {:divisor 5, :output "plong", :times-divisible 102} {:divisor 17, :output "tshäng", :times-divisible 30})
+  ;; => ({:divisor 2, :output "pling", :times-divisible 255} {:divisor 3, :output "plang", :times-divisible 170} {:divisor 5, :output "plong", :times-divisible 102} {:divisor 17, :output "tshäng", :times-divisible 30})
   (map :output (not-empty (divisible-cases 510 special-cases)))
-;; => ("pling" "plang" "plong" "tshäng")
-  (raindrops 1)
-  ;; => "blob"
-  (raindrops 6)
-  ;; => "pling, plang"
-  (raindrops 10)
-  ;; => "pling, plong"
+  ;; => ("pling" "plang" "plong" "tshäng")
   :end)
 
 (defn -main
