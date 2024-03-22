@@ -3,7 +3,7 @@
 
 (defrecord SpecialCase [divisor output])
 
-(def special-cases
+(def ^:private special-cases
   #{{:divisor 2 :output "pling"}
     {:divisor 3 :output "plang"}
     {:divisor 5 :output "plong"}
@@ -72,17 +72,26 @@
   ([n special-cases]
    (raindrops n special-cases canned-response))
   ([n special-cases canned-response]
-   (let [k (keyword (str n))]
-     (if-let [val (k special-cases)]
-       val
-       canned-response))))
+   (if-let [answers (not-empty (divisible-cases n special-cases))]
+     (reduce str (map :output answers))
+     canned-response)))
 
 (comment
+  special-cases
+  ;; => #{{:divisor 17, :output "tshäng"} {:divisor 2, :output "pling"} {:divisor 3, :output "plang"} {:divisor 5, :output "plong"}}
+  (augment-special-cases 2 special-cases)
+  ;; => ({:divisor 17, :output "tshäng", :divisible false, :times-divisible 0} {:divisor 2, :output "pling", :divisible true, :times-divisible 1} {:divisor 3, :output "plang", :divisible false, :times-divisible 0} {:divisor 5, :output "plong", :divisible false, :times-divisible 0})
   (raindrops 2)
   ;; => "pling"
   (raindrops 4)
-  (keyword (str 2))
-  ((keyword (str 2)) special-cases))
+;; => "pling"
+  (if (divisible-cases 11 special-cases) "y" "n")
+;; => "y"
+  (if () "y" "n")
+;; => "y"
+  (raindrops 1)
+;; => "blob"
+  :end)
 
 (defn -main
   "I don't do a whole lot ... yet."
