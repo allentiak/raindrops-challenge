@@ -20,15 +20,19 @@
   (zero? (mod n divisor)))
 
 (defn- divisible-by-special-case?
-  "given an integer and a special case, return a new map with a new ':divisible' key with the result of applying 'divisible?' to the inteeger and the special case"
+  "given an integer and a special case map, return an augmented map with the new keys: ':divisible' with the result of applying 'divisible?' to the inteeger and the special case, and ':times-divisible' with how many times it is divisible"
   [n special-case]
-  (assoc special-case :divisible (divisible? n (:divisor special-case))))
+  (let [d? (divisible? n (:divisor special-case))
+        divisible-case (assoc special-case :divisible d?)]
+    (assoc divisible-case :times-divisible (if d?
+                                             (/ n (:divisor special-case))
+                                             0))))
 
 (comment
   (divisible-by-special-case? 4 (first special-cases))
-  ;; => {:divisor 17, :output "tshäng", :divisible false}
+;; => {:divisor 17, :output "tshäng", :divisible false, :times-divisible 0}
   (divisible-by-special-case? 4 (second special-cases))
-  ;; => {:divisor 2, :output "pling", :divisible true}
+;; => {:divisor 2, :output "pling", :divisible true, :times-divisible 2}
   ,)
 
 (defn- divisible-by-many?
@@ -38,28 +42,12 @@
     (map divisible-by-special-case? ns divisors-set)))
 
 (comment
-  (assoc (first special-cases) :divisible "whatever")
-  ;; => {:divisor 17, :output "tshäng", :divisible "whatever"}
-  (let [n 17
-        my-case (first special-cases)]
-    (assoc my-case :divisible (divisible? n (:divisor my-case))))
-  ;; => {:divisor 17, :output "tshäng", :divisible true}
-  (divisible-by-many? 4 special-cases)
-  ;; => ({:divisor 17, :output "tshäng", :divisible false} {:divisor 2, :output "pling", :divisible true} {:divisor 3, :output "plang", :divisible false} {:divisor 5, :output "plong", :divisible false})
+  (first special-cases)
+  ;; => {:divisor 17, :output "tshäng"}
+  (divisible-by-many? 17 special-cases)
+  ;; => ({:divisor 17, :output "tshäng", :divisible true, :times-divisible 1} {:divisor 2, :output "pling", :divisible false, :times-divisible 0} {:divisor 3, :output "plang", :divisible false, :times-divisible 0} {:divisor 5, :output "plong", :divisible false, :times-divisible 0})
   ,)
 
-
-(comment
-  (take 3 (repeat 2))
-  ;; => (2 2 2)
-  (divisible-by-many? 119 special-cases)
-  ;; => (false false false true)
-  ,)
-
-
-(comment
-  (:2 special-cases))
-  ;; => "pling"
 
 (def ^:private canned-response
   "blob")
