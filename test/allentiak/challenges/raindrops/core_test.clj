@@ -17,6 +17,12 @@
              (expect (= (sut/raindrops 7) "blob"))
              (expect (= (sut/raindrops 113) "blob")))
 
+  (expecting "divisible by different divisors"
+             (expect (= (sut/raindrops 6) "pling, plang"))
+             (expect (= (sut/raindrops 10) "pling, plong"))
+             (expect (= (sut/raindrops 34) "pling, tshäng"))
+             (expect (= (sut/raindrops 510) "pling, plang, plong, tshäng")))
+
   (expecting "more base cases"
              (expect (= (sut/raindrops 4) "pling"))
              (expect (= (sut/raindrops 9) "plang"))

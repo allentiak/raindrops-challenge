@@ -37,16 +37,16 @@
   ,)
 
 (defn- augment-special-cases
-  "given an integer and a seq of SpecialCase's, returns a seq augmenting each SpecialCase with a new key ':divisible' with the result of applying 'divisible?' to the integer and the divisor"
+  "given an integer and a seq of SpecialCase's, returns a seq augmenting each SpecialCase with a new key ':divisible' with the result of applying 'divisible?' to the integer and the divisor, ordered by ':divisor'"
   [n special-cases]
   (let [ns (take (count special-cases) (repeat n))]
-    (map add-divisible-fields ns special-cases)))
+    (sort-by :divisor (map add-divisible-fields ns special-cases))))
 
 (comment
   (first special-cases)
   ;; => {:divisor 17, :output "tshäng"}
   (augment-special-cases 17 special-cases)
-  ;; => ({:divisor 17, :output "tshäng", :divisible true, :times-divisible 1} {:divisor 2, :output "pling", :divisible false, :times-divisible 0} {:divisor 3, :output "plang", :divisible false, :times-divisible 0} {:divisor 5, :output "plong", :divisible false, :times-divisible 0})
+  ;; => ({:divisor 2, :output "pling", :divisible false, :times-divisible 0} {:divisor 3, :output "plang", :divisible false, :times-divisible 0} {:divisor 5, :output "plong", :divisible false, :times-divisible 0} {:divisor 17, :output "tshäng", :divisible true, :times-divisible 1})
   ,)
 
 (defn- divisible-cases
@@ -73,14 +73,14 @@
    (raindrops n special-cases canned-response))
   ([n special-cases canned-response]
    (if-let [answers (not-empty (divisible-cases n special-cases))]
-     (reduce str (map :output answers))
+     (apply str (interpose ", " (map :output answers)))
      canned-response)))
 
 (comment
   special-cases
   ;; => #{{:divisor 17, :output "tshäng"} {:divisor 2, :output "pling"} {:divisor 3, :output "plang"} {:divisor 5, :output "plong"}}
-  (augment-special-cases 2 special-cases)
-  ;; => ({:divisor 17, :output "tshäng", :divisible false, :times-divisible 0} {:divisor 2, :output "pling", :divisible true, :times-divisible 1} {:divisor 3, :output "plang", :divisible false, :times-divisible 0} {:divisor 5, :output "plong", :divisible false, :times-divisible 0})
+  (divisible-cases 2 special-cases)
+;; => ({:divisor 2, :output "pling", :times-divisible 1})
   (raindrops 2)
   ;; => "pling"
   (raindrops 4)
@@ -91,6 +91,12 @@
 ;; => "y"
   (raindrops 1)
 ;; => "blob"
+  (divisible-cases 6 special-cases)
+;; => ({:divisor 2, :output "pling", :times-divisible 3} {:divisor 3, :output "plang", :times-divisible 2})
+  (raindrops 6)
+;; => "pling, plang"
+  (raindrops 10)
+;; => "pling, plong"
   :end)
 
 (defn -main
