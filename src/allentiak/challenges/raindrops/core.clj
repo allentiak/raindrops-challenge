@@ -1,23 +1,16 @@
 (ns allentiak.challenges.raindrops.core
   (:gen-class))
 
-(defrecord SpecialCase [divisor output])
+(def ^:private problem
+  {:special-cases
+   #{{:divisor 2 :output "pling"}
+     {:divisor 3 :output "plang"}
+     {:divisor 5 :output "plong"}
+     {:divisor 17 :output "tshäng"}}
+   :default-output "blob"})
 
 (def ^:private special-cases
-  #{{:divisor 2 :output "pling"}
-    {:divisor 3 :output "plang"}
-    {:divisor 5 :output "plong"}
-    {:divisor 17 :output "tshäng"}})
-
-(def ^:private canned-response
-  "blob")
-
-(def ^:private problem
-  {:special-cases special-cases
-   :canned-response canned-response})
-
-(comment
-  :end)
+  (:special-cases problem))
 
 (defn- divisible?
   "given an integer and an integer divisor, returns whether the number is divisible by the divisor"
@@ -68,13 +61,11 @@
 (defn raindrops
   "given a natural integer, produce a specific sound for special cases, and 'blob' for the rest"
   ([n]
-   (raindrops n special-cases canned-response))
-  ([n special-cases]
-   (raindrops n special-cases canned-response))
-  ([n special-cases canned-response]
+   (raindrops n problem))
+  ([n {:keys [special-cases default-output] :as problem-map}]
    (if-let [answers (not-empty (divisible-cases n special-cases))]
      (apply str (interpose ", " (map :output answers)))
-     canned-response)))
+     default-output)))
 
 (comment
   (raindrops 2)
