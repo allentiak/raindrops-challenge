@@ -19,7 +19,7 @@
   [n divisor]
   (zero? (mod n divisor)))
 
-(defn- divisible-by-special-case?
+(defn- add-divisible-fields
   "given an integer and a special case map, return an augmented map with the new keys: ':divisible' with the result of applying 'divisible?' to the inteeger and the special case, and ':times-divisible' with how many times it is divisible"
   [n special-case]
   (let [d? (divisible? n (:divisor special-case))
@@ -30,22 +30,22 @@
       (assoc case-with-divisible :times-divisible how-many-times)))
 
 (comment
-  (divisible-by-special-case? 4 (first special-cases))
+  (add-divisible-fields 4 (first special-cases))
 ;; => {:divisor 17, :output "tshäng", :divisible false, :times-divisible 0}
-  (divisible-by-special-case? 4 (second special-cases))
+  (add-divisible-fields 4 (second special-cases))
 ;; => {:divisor 2, :output "pling", :divisible true, :times-divisible 2}
   ,)
 
-(defn- divisible-by-many?
+(defn- augment-special-cases
   "given an integer and a seq of SpecialCase's, returns a seq augmenting each SpecialCase with a new key ':divisible' with the result of applying 'divisible?' to the integer and the divisor"
   [n special-cases]
   (let [ns (take (count special-cases) (repeat n))]
-    (map divisible-by-special-case? ns special-cases)))
+    (map add-divisible-fields ns special-cases)))
 
 (comment
   (first special-cases)
   ;; => {:divisor 17, :output "tshäng"}
-  (divisible-by-many? 17 special-cases)
+  (augment-special-cases 17 special-cases)
   ;; => ({:divisor 17, :output "tshäng", :divisible true, :times-divisible 1} {:divisor 2, :output "pling", :divisible false, :times-divisible 0} {:divisor 3, :output "plang", :divisible false, :times-divisible 0} {:divisor 5, :output "plong", :divisible false, :times-divisible 0})
   ,)
 
