@@ -49,6 +49,18 @@
   ;; => ({:divisor 17, :output "tshäng", :divisible true, :times-divisible 1} {:divisor 2, :output "pling", :divisible false, :times-divisible 0} {:divisor 3, :output "plang", :divisible false, :times-divisible 0} {:divisor 5, :output "plong", :divisible false, :times-divisible 0})
   ,)
 
+(defn- divisible-cases
+  "given a positive integer and an seq of SpecialCase's, return only the SpecialCases to which the integer is divisible by"
+  [n special-cases]
+  (let [augmented-special-cases (augment-special-cases n special-cases)]
+    (filter :divisible augmented-special-cases)))
+
+(comment
+  (divisible-cases 4 special-cases)
+;; => ({:divisor 2, :output "pling", :divisible true, :times-divisible 2})
+  (divisible-cases 6 special-cases)
+;; => ({:divisor 2, :output "pling", :divisible true, :times-divisible 3} {:divisor 3, :output "plang", :divisible true, :times-divisible 2})
+  :end)
 
 (def ^:private canned-response
   "blob")
