@@ -38,9 +38,9 @@
 
 (defn- divisible-by-many?
   "given an integer and a seq of SpecialCase's, returns a seq augmenting each SpecialCase with a new key ':divisible' with the result of applying 'divisible?' to the integer and the divisor"
-  [n divisors-set]
-  (let [ns (take (count divisors-set) (repeat n))]
-    (map divisible-by-special-case? ns divisors-set)))
+  [n special-cases]
+  (let [ns (take (count special-cases) (repeat n))]
+    (map divisible-by-special-case? ns special-cases)))
 
 (comment
   (first special-cases)
