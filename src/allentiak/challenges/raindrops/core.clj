@@ -1,5 +1,6 @@
 (ns allentiak.challenges.raindrops.core
-  (:gen-class))
+  (:gen-class)
+  (:require [clojure.string :as str]))
 
 (def ^:private problem
   {:special-cases
@@ -7,7 +8,11 @@
      {:divisor 3 :output "plang"}
      {:divisor 5 :output "plong"}
      {:divisor 17 :output "tshäng"}}
-   :default-output "blob"})
+   :default-output "blob"
+   :transformation-fns
+   [`first-transformation
+    `second-transformation
+    `third-transformation]})
 
 (def ^:private special-cases
   (:special-cases problem))
@@ -58,6 +63,43 @@
   ;; => ({:divisor 2, :output "pling", :times-divisible 3} {:divisor 3, :output "plang", :times-divisible 2})
   :end)
 
+(defn- first-transformation
+  [s]
+  (str/upper-case s))
+
+(defn- second-transformation
+  [s]
+  (str "*" (first-transformation s) "*"))
+
+(defn- third-transformation
+  [s]
+  (list (second-transformation s) s))
+
+(comment
+  (:special-cases problem)
+  ;; => #{{:divisor 17, :output "tshäng"} {:divisor 2, :output "pling"} {:divisor 3, :output "plang"} {:divisor 5, :output "plong"}}
+  (map :output (:special-cases problem))
+  ;; => ("tshäng" "pling" "plang" "plong")
+  (def ^:private sounds (map :output (:special-cases problem)))
+  sounds
+  ;; => ("tshäng" "pling" "plang" "plong")
+
+  (map first-transformation sounds)
+  ;; => ("TSHÄNG" "PLING" "PLANG" "PLONG")
+
+  (map second-transformation sounds)
+  ;; => ("*TSHÄNG*" "*PLING*" "*PLANG*" "*PLONG*")
+
+  (map third-transformation sounds)
+;; => (("*TSHÄNG*" "tshäng") ("*PLING*" "pling") ("*PLANG*" "plang") ("*PLONG*" "plong"))
+
+  #_(let
+     [normal-output         #"^\p{Ll}+$"
+      first-transformation  #"^\p{Lu}+$"
+      second-transformation #"^\*\p{Lu}+\*$"])
+
+  :end)
+
 (defn raindrops
   "given a natural integer, produce a specific sound for special cases, and 'blob' for the rest"
   ([n]
@@ -74,6 +116,10 @@
   ;; => "y"
   (if (not-empty ()) "y" "n")
   ;; => "n"
+  (not-empty (divisible-cases 510 special-cases))
+;; => ({:divisor 2, :output "pling", :times-divisible 255} {:divisor 3, :output "plang", :times-divisible 170} {:divisor 5, :output "plong", :times-divisible 102} {:divisor 17, :output "tshäng", :times-divisible 30})
+  (map :output (not-empty (divisible-cases 510 special-cases)))
+;; => ("pling" "plang" "plong" "tshäng")
   (raindrops 1)
   ;; => "blob"
   (raindrops 6)
