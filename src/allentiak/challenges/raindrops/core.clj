@@ -23,10 +23,11 @@
   "given an integer and a special case map, return an augmented map with the new keys: ':divisible' with the result of applying 'divisible?' to the inteeger and the special case, and ':times-divisible' with how many times it is divisible"
   [n special-case]
   (let [d? (divisible? n (:divisor special-case))
-        divisible-case (assoc special-case :divisible d?)]
-    (assoc divisible-case :times-divisible (if d?
-                                             (/ n (:divisor special-case))
-                                             0))))
+        case-with-divisible (assoc special-case :divisible d?)
+        how-many-times (if d?
+                         (/ n (:divisor special-case))
+                         0)]
+      (assoc case-with-divisible :times-divisible how-many-times)))
 
 (comment
   (divisible-by-special-case? 4 (first special-cases))
