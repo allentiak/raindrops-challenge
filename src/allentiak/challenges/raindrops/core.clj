@@ -101,6 +101,30 @@
 
   :end)
 
+(defn- transform-answer
+  "given an answer map with ':divisor', ':base-output', and ':times-divisible', return an output map with ':output'"
+  [{:keys [base-output times-divisible] :as answer}]
+  {:output
+   (condp = times-divisible
+     1 base-output
+     2 (first-transformation base-output)
+     3 (second-transformation base-output)
+     4 (third-transformation base-output)
+     (third-transformation base-output))})
+
+(comment
+  (divisible-cases 4 special-cases)
+  ;; => ({:divisor 2, :base-output "pling", :times-divisible 2})
+  (transform-answer (first (divisible-cases 2 special-cases)))
+;; => {:output "pling"}
+  (transform-answer (first (divisible-cases 4 special-cases)))
+;; => {:output "PLING"}
+  (transform-answer (first (divisible-cases 6 special-cases)))
+;; => {:output "*PLING*"}
+  (transform-answer (first (divisible-cases 8 special-cases)))
+;; => {:output ("*PLING*" "pling")}
+  :end)
+
 (defn raindrops
   "given a natural integer, produce a specific sound for special cases, and 'blob' for the rest"
   ([n]
