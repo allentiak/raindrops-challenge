@@ -109,10 +109,11 @@
   "given an answer map (with ':divisor', ':base-output', and ':times-divisible'), and a transformation fns vector, return an output map.
   This map has the key ':output', which contains the list of outputs"
   [{:keys [base-output times-divisible] :as answer} transformation-fns-vector]
-  {:output
-   (if (<= times-divisible (count transformation-fns-vector))
-     ((resolve (nth transformation-fns-vector (dec times-divisible))) base-output)
-     ((resolve (last transformation-fns-vector)) base-output))})
+  (let [idx (dec
+             (min times-divisible
+                  (count transformation-fns-vector)))
+        f (resolve (nth transformation-fns-vector idx))]
+    {:output (f base-output)}))
 
 (comment
   (divisible-cases 4 special-cases)
