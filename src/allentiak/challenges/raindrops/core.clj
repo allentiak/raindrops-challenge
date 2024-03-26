@@ -159,16 +159,16 @@
 ;; => ({:output ("*PLING*" "pling")} {:output "PLONG"})
 
   (->>
-    (divisible-cases 10 special-cases)
-    not-empty
-    (map transform-answer)
-    (map :output)
-    (map #(str/join " " %))
-    (str/join ", "))
+   (divisible-cases 10 special-cases)
+   not-empty
+   (map transform-answer)
+   (map :output)
+   (map #(str/join " " %))
+   (str/join ", "))
 ;; => "*PLING* pling, P L O N G"
 
   (->>
-    (map :output (map transform-answer (not-empty (divisible-cases 10 special-cases)))))
+   (map :output (map transform-answer (not-empty (divisible-cases 10 special-cases)))))
 ;; => (("*PLING*" "pling") "PLONG")
 
   ;; it can even mimic a fizzbuzz!
