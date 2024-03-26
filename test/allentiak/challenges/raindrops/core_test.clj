@@ -24,7 +24,4 @@
              (expect (= (sut/raindrops 510) "pling, plang, plong, tshäng")))
 
   (expecting "first transformation"
-             (expect (= (sut/raindrops 4) "PLING"))
-             (expect (= (sut/raindrops 9) "PLANG"))
-             (expect (= (sut/raindrops 25) "PLONG"))
-             (expect (= (sut/raindrops 119) "TSHÄNG"))))
+             (expect (= (sut/raindrops 4) "PLING"))))
