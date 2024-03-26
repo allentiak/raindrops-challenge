@@ -4,10 +4,10 @@
 
 (def ^:private problem
   {:special-cases
-   #{{:divisor 2 :output "pling"}
-     {:divisor 3 :output "plang"}
-     {:divisor 5 :output "plong"}
-     {:divisor 17 :output "tshäng"}}
+   #{{:divisor 2 :base-output "pling"}
+     {:divisor 3 :base-output "plang"}
+     {:divisor 5 :base-output "plong"}
+     {:divisor 17 :base-output "tshäng"}}
    :default-output-fn
    (constantly "blob")
    :transformation-fns
@@ -35,9 +35,9 @@
 
 (comment
   (add-divisible-fields 4 (first special-cases))
-  ;; => {:divisor 17, :output "tshäng", :divisible false, :times-divisible 0}
+  ;; => {:divisor 17, :base-output "tshäng", :divisible false, :times-divisible 0}
   (add-divisible-fields 4 (second special-cases))
-  ;; => {:divisor 2, :output "pling", :divisible true, :times-divisible 2}
+  ;; => {:divisor 2, :base-output "pling", :divisible true, :times-divisible 2}
   :end)
 
 (defn- augment-special-cases
@@ -48,20 +48,20 @@
 
 (comment
   (augment-special-cases 17 special-cases)
-  ;; => ({:divisor 2, :output "pling", :divisible false, :times-divisible 0} {:divisor 3, :output "plang", :divisible false, :times-divisible 0} {:divisor 5, :output "plong", :divisible false, :times-divisible 0} {:divisor 17, :output "tshäng", :divisible true, :times-divisible 1})
+  ;; => ({:divisor 2, :base-output "pling", :divisible false, :times-divisible 0} {:divisor 3, :base-output "plang", :divisible false, :times-divisible 0} {:divisor 5, :base-output "plong", :divisible false, :times-divisible 0} {:divisor 17, :base-output "tshäng", :divisible true, :times-divisible 1})
   :end)
 
 (defn- divisible-cases
-  "given a positive integer and an seq of SpecialCase's, return a seq of Answers, consisting in only the fields ':divisor', ':output', and ':times-divisible' of the SpecialCases to which the integer is divisible by"
+  "given a positive integer and an seq of SpecialCase's, return a seq of Answers, consisting in only the fields ':divisor', ':base-output', and ':times-divisible' of the SpecialCases to which the integer is divisible by"
   [n special-cases]
   (let [augmented-special-cases (augment-special-cases n special-cases)]
     (map #(dissoc % :divisible) (filter :divisible augmented-special-cases))))
 
 (comment
   (divisible-cases 4 special-cases)
-  ;; => ({:divisor 2, :output "pling", :times-divisible 2})
+  ;; => ({:divisor 2, :base-output "pling", :times-divisible 2})
   (divisible-cases 6 special-cases)
-  ;; => ({:divisor 2, :output "pling", :times-divisible 3} {:divisor 3, :output "plang", :times-divisible 2})
+  ;; => ({:divisor 2, :base-output "pling", :times-divisible 3} {:divisor 3, :base-output "plang", :times-divisible 2})
   :end)
 
 (defn- first-transformation
@@ -78,10 +78,10 @@
 
 (comment
   (:special-cases problem)
-  ;; => #{{:divisor 17, :output "tshäng"} {:divisor 2, :output "pling"} {:divisor 3, :output "plang"} {:divisor 5, :output "plong"}}
-  (map :output (:special-cases problem))
+  ;; => #{{:divisor 17, :base-output "tshäng"} {:divisor 2, :base-output "pling"} {:divisor 3, :base-output "plang"} {:divisor 5, :base-output "plong"}}
+  (map :base-output (:special-cases problem))
   ;; => ("tshäng" "pling" "plang" "plong")
-  (def ^:private sounds (map :output (:special-cases problem)))
+  (def ^:private sounds (map :base-output (:special-cases problem)))
   sounds
   ;; => ("tshäng" "pling" "plang" "plong")
 
@@ -107,7 +107,7 @@
    (raindrops n problem))
   ([n {:keys [special-cases default-output-fn] :as problem-map}]
    (if-let [answers (not-empty (divisible-cases n special-cases))]
-     (apply str (interpose ", " (map :output answers)))
+     (apply str (interpose ", " (map :base-output answers)))
      (default-output-fn n))))
 
 (comment
@@ -139,8 +139,8 @@
   (if (not-empty ()) "y" "n")
   ;; => "n"
   (not-empty (divisible-cases 510 special-cases))
-  ;; => ({:divisor 2, :output "pling", :times-divisible 255} {:divisor 3, :output "plang", :times-divisible 170} {:divisor 5, :output "plong", :times-divisible 102} {:divisor 17, :output "tshäng", :times-divisible 30})
-  (map :output (not-empty (divisible-cases 510 special-cases)))
+  ;; => ({:divisor 2, :base-output "pling", :times-divisible 255} {:divisor 3, :base-output "plang", :times-divisible 170} {:divisor 5, :base-output "plong", :times-divisible 102} {:divisor 17, :base-output "tshäng", :times-divisible 30})
+  (map :base-output (not-empty (divisible-cases 510 special-cases)))
   ;; => ("pling" "plang" "plong" "tshäng")
   :end)
 
