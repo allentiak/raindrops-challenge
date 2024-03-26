@@ -83,8 +83,10 @@
 (comment
   (:special-cases problem)
   ;; => #{{:divisor 17, :base-output "tshäng"} {:divisor 2, :base-output "pling"} {:divisor 3, :base-output "plang"} {:divisor 5, :base-output "plong"}}
+
   (map :base-output (:special-cases problem))
   ;; => ("tshäng" "pling" "plang" "plong")
+
   (def ^:private sounds (map :base-output (:special-cases problem)))
   sounds
   ;; => ("tshäng" "pling" "plang" "plong")
@@ -96,12 +98,7 @@
   ;; => ("*TSHÄNG*" "*PLING*" "*PLANG*" "*PLONG*")
 
   (map third-transformation sounds)
-;; => ("*TSHÄNG* tshäng" "*PLING* pling" "*PLANG* plang" "*PLONG* plong")
-
-  #_(let
-     [normal-output         #"^\p{Ll}+$"
-      first-transformation  #"^\p{Lu}+$"
-      second-transformation #"^\*\p{Lu}+\*$"])
+  ;; => ("*TSHÄNG* tshäng" "*PLING* pling" "*PLANG* plang" "*PLONG* plong")
 
   :end)
 
@@ -116,23 +113,9 @@
     {:output (f base-output)}))
 
 (comment
-  (divisible-cases 4 special-cases)
-  ;; => ({:divisor 2, :base-output "pling", :times-divisible 2})
-  transformation-fns
-  ;; => [clojure.core/identity allentiak.challenges.raindrops.core/first-transformation allentiak.challenges.raindrops.core/second-transformation allentiak.challenges.raindrops.core/third-transformationl]
-  (count transformation-fns)
-  ;; => 4
-  (nth transformation-fns 3)
-  ;; => allentiak.challenges.raindrops.core/third-transformation
-  (let [three (resolve `allentiak.challenges.raindrops.core/third-transformation)]
-    (three "ss"))
-  ;; => "*SS* ss"
-
-  ((resolve (nth transformation-fns 2)) "pling")
-  ;; => "*PLING*"
-
   (first (divisible-cases 2 special-cases))
   ;; => {:divisor 2, :base-output "pling", :times-divisible 1}
+
   (transform-answer (first (divisible-cases 2 special-cases)) transformation-fns)
   ;; => {:output "pling"}
   (transform-answer (first (divisible-cases 4 special-cases)) transformation-fns)
@@ -155,22 +138,6 @@
      (default-output-fn n))))
 
 (comment
-  (map transform-answer (not-empty (divisible-cases 10 special-cases)))
-;; => ({:output ("*PLING*" "pling")} {:output "PLONG"})
-
-  (->>
-   (divisible-cases 10 special-cases)
-   not-empty
-   (map transform-answer)
-   (map :output)
-   (map #(str/join " " %))
-   (str/join ", "))
-;; => "*PLING* pling, P L O N G"
-
-  (->>
-   (map :output (map transform-answer (not-empty (divisible-cases 10 special-cases)))))
-;; => (("*PLING*" "pling") "PLONG")
-
   ;; it can even mimic a fizzbuzz!
   (let [new-problem-map (assoc problem :default-output-fn identity)]
     (raindrops 1 new-problem-map))
@@ -179,29 +146,17 @@
   ;; or anything else...
   (let [new-problem-map (assoc problem :default-output-fn inc)]
     (raindrops 1 new-problem-map))
-    ;; => 2
+  ;; => 2
 
-  (:default-output-fn problem)
-  ;; => #function[clojure.core/constantly/fn--5740]
-  ((constantly "blob"))
-  ;; => "blob"
-  (def m {:fn (constantly "abc")})
-  ((:fn m))
-  ;; => "abc"
   (raindrops 1)
   ;; => "blob"
+
   (raindrops 2)
   ;; => "pling"
+
   (raindrops 10)
   ;; => "*PLING*, pling, PLONG"
-  (if () "y" "n")
-  ;; => "y"
-  (if (not-empty ()) "y" "n")
-  ;; => "n"
-  (not-empty (divisible-cases 510 special-cases))
-  ;; => ({:divisor 2, :base-output "pling", :times-divisible 255} {:divisor 3, :base-output "plang", :times-divisible 170} {:divisor 5, :base-output "plong", :times-divisible 102} {:divisor 17, :base-output "tshäng", :times-divisible 30})
-  (map :base-output (not-empty (divisible-cases 510 special-cases)))
-  ;; => ("pling" "plang" "plong" "tshäng")
+
   :end)
 
 (defn -main
