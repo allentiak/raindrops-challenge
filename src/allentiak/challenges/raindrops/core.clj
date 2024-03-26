@@ -159,30 +159,34 @@
 
   :end)
 
+(defn- monotone-seq
+  "returns an infinite pseudo-random monotone sequence starting at n"
+    [n]
+  (iterate
+    #(max % (rand-int (* % (+ 1 (rand 1)))))
+    n))
+
 (comment
-  (let [times 5
-        ceiling 42]
-    (map raindrops (take times (repeat (rand-int ceiling)))))
-  ;; => ("*PLING* pling" "*PLING* pling" "*PLING* pling" "*PLING* pling" "*PLING* pling")
-
-  (defn- monotone-seq
-    "creates a momonotone sequence of n random numbers"
-    []
-    (loop [s ()
-           inf-limit 0]
-      (let [new-int (+ inf-limit (rand-int Integer/MAX_VALUE))]
-        ;; this call hangs up the REPL
-        (recur (conj s new-int) new-int))))
-
-  (take 10 (monotone-seq))
+  (take 45 (monotone-seq 22))
 
   (require '[clojure.spec.alpha :as s])
+  (require '[clojure.spec.test.alpha :as st])
 
   (s/fdef monotone-seq
-    :args []
+    :args (s/cat :n pos-int?)
+    :ret (s/coll-of pos-int?)
     :fn
     (and (sorted? :ret)
          (= :ret (reverse :ret))))
+
+  (seq? (range))
+  ;; => true
+
+  (st/instrument)
+  ;; => [allentiak.challenges.raindrops.core/monotone-seq]
+
+  (st/check `monotone-seq)
+  ;; this fails due to a faulty spec
 
   :end)
 
