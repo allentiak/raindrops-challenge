@@ -17,11 +17,14 @@
              (expect (= (sut/raindrops 7) "blob"))
              (expect (= (sut/raindrops 113) "blob")))
 
-  (expecting "divisible by different divisors"
+  (expecting "first transformation"
+    ;; this is the only case when one number
+    ;; is divisible twice by only one of the factors
+    ;; (and not by any of the other factors)
+             (expect (= (sut/raindrops 4) "PLING")))
+
+  (expecting "combining different transformations"
              (expect (= (sut/raindrops 6) "*PLING*, PLANG"))
              (expect (= (sut/raindrops 10) "*PLING* pling, PLONG"))
              (expect (= (sut/raindrops 34) "*PLING* pling, TSHÄNG"))
-             (expect (= (sut/raindrops 510) "*PLING* pling, *PLANG* plang, *PLONG* plong, *TSHÄNG* tshäng")))
-
-  (expecting "first transformation"
-             (expect (= (sut/raindrops 4) "PLING"))))
+             (expect (= (sut/raindrops 510) "*PLING* pling, *PLANG* plang, *PLONG* plong, *TSHÄNG* tshäng"))))
