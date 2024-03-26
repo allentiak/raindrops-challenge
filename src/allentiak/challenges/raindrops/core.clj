@@ -74,7 +74,7 @@
 
 (defn- third-transformation
   [s]
-  (list (second-transformation s) s))
+  (str/join " " (list (second-transformation s) s)))
 
 (comment
   (:special-cases problem)
@@ -92,7 +92,7 @@
   ;; => ("*TSHÄNG*" "*PLING*" "*PLANG*" "*PLONG*")
 
   (map third-transformation sounds)
-;; => (("*TSHÄNG*" "tshäng") ("*PLING*" "pling") ("*PLANG*" "plang") ("*PLONG*" "plong"))
+;; => ("*TSHÄNG* tshäng" "*PLING* pling" "*PLANG* plang" "*PLONG* plong")
 
   #_(let
      [normal-output         #"^\p{Ll}+$"
@@ -102,7 +102,8 @@
   :end)
 
 (defn- transform-answer
-  "given an answer map with ':divisor', ':base-output', and ':times-divisible', return an output map with ':output'"
+  "given an answer map with ':divisor', ':base-output', and ':times-divisible', return an output map.
+  This map has the key ':output', which contains the list of outputs"
   [{:keys [base-output times-divisible] :as answer}]
   {:output
    (condp = times-divisible
@@ -122,7 +123,7 @@
   (transform-answer (first (divisible-cases 6 special-cases)))
 ;; => {:output "*PLING*"}
   (transform-answer (first (divisible-cases 8 special-cases)))
-;; => {:output ("*PLING*" "pling")}
+;; => {:output "*PLING* pling"}
   :end)
 
 (defn raindrops
@@ -131,10 +132,28 @@
    (raindrops n problem))
   ([n {:keys [special-cases default-output-fn] :as problem-map}]
    (if-let [answers (not-empty (divisible-cases n special-cases))]
-     (apply str (interpose ", " (map :base-output answers)))
+     (let [transformed-answers (map transform-answer answers)
+           outputs (map :output transformed-answers)]
+       (str/join ", " outputs))
      (default-output-fn n))))
 
 (comment
+  (map transform-answer (not-empty (divisible-cases 10 special-cases)))
+;; => ({:output ("*PLING*" "pling")} {:output "PLONG"})
+
+  (->>
+    (divisible-cases 10 special-cases)
+    not-empty
+    (map transform-answer)
+    (map :output)
+    (map #(str/join " " %))
+    (str/join ", "))
+;; => "*PLING* pling, P L O N G"
+
+  (->>
+    (map :output (map transform-answer (not-empty (divisible-cases 10 special-cases)))))
+;; => (("*PLING*" "pling") "PLONG")
+
   ;; it can even mimic a fizzbuzz!
   (let [new-problem-map (assoc problem :default-output-fn identity)]
     (raindrops 1 new-problem-map))
@@ -143,7 +162,7 @@
   ;; or anything else...
   (let [new-problem-map (assoc problem :default-output-fn inc)]
     (raindrops 1 new-problem-map))
-  ;; => 2
+    ;; => 2
 
   (:default-output-fn problem)
   ;; => #function[clojure.core/constantly/fn--5740]
@@ -157,7 +176,7 @@
   (raindrops 2)
   ;; => "pling"
   (raindrops 10)
-  ;; => "pling, plong"
+  ;; => "*PLING*, pling, PLONG"
   (if () "y" "n")
   ;; => "y"
   (if (not-empty ()) "y" "n")
