@@ -11,12 +11,16 @@
    :default-output-fn
    (constantly "blob")
    :transformation-fns
-   [`first-transformation
-    `second-transformation
-    `third-transformation]})
+   `[identity
+     first-transformation
+     second-transformation
+     third-transformation]})
 
 (def ^:private special-cases
   (:special-cases problem))
+
+(def ^:private transformation-fns
+  (:transformation-fns problem))
 
 (defn- divisible?
   "given an integer and an integer divisor, returns whether the number is divisible by the divisor"
@@ -102,28 +106,40 @@
   :end)
 
 (defn- transform-answer
-  "given an answer map with ':divisor', ':base-output', and ':times-divisible', return an output map.
+  "given an answer map (with ':divisor', ':base-output', and ':times-divisible'), and a transformation fns vector, return an output map.
   This map has the key ':output', which contains the list of outputs"
-  [{:keys [base-output times-divisible] :as answer}]
+  [{:keys [base-output times-divisible] :as answer} transformation-fns-vector]
   {:output
-   (condp = times-divisible
-     1 base-output
-     2 (first-transformation base-output)
-     3 (second-transformation base-output)
-     4 (third-transformation base-output)
-     (third-transformation base-output))})
+   (if (<= times-divisible (count transformation-fns-vector))
+     ((resolve (nth transformation-fns-vector (dec times-divisible))) base-output)
+     ((resolve (last transformation-fns-vector)) base-output))})
 
 (comment
   (divisible-cases 4 special-cases)
   ;; => ({:divisor 2, :base-output "pling", :times-divisible 2})
-  (transform-answer (first (divisible-cases 2 special-cases)))
-;; => {:output "pling"}
-  (transform-answer (first (divisible-cases 4 special-cases)))
-;; => {:output "PLING"}
-  (transform-answer (first (divisible-cases 6 special-cases)))
-;; => {:output "*PLING*"}
-  (transform-answer (first (divisible-cases 8 special-cases)))
-;; => {:output "*PLING* pling"}
+  transformation-fns
+  ;; => [clojure.core/identity allentiak.challenges.raindrops.core/first-transformation allentiak.challenges.raindrops.core/second-transformation allentiak.challenges.raindrops.core/third-transformationl]
+  (count transformation-fns)
+  ;; => 4
+  (nth transformation-fns 3)
+  ;; => allentiak.challenges.raindrops.core/third-transformation
+  (let [three (resolve `allentiak.challenges.raindrops.core/third-transformation)]
+    (three "ss"))
+  ;; => "*SS* ss"
+
+  ((resolve (nth transformation-fns 2)) "pling")
+  ;; => "*PLING*"
+
+  (first (divisible-cases 2 special-cases))
+  ;; => {:divisor 2, :base-output "pling", :times-divisible 1}
+  (transform-answer (first (divisible-cases 2 special-cases)) transformation-fns)
+  ;; => {:output "pling"}
+  (transform-answer (first (divisible-cases 4 special-cases)) transformation-fns)
+  ;; => {:output "PLING"}
+  (transform-answer (first (divisible-cases 6 special-cases)) transformation-fns)
+  ;; => {:output "*PLING*"}
+  (transform-answer (first (divisible-cases 8 special-cases)) transformation-fns)
+  ;; => {:output "*PLING* pling"}
   :end)
 
 (defn raindrops
@@ -132,7 +148,7 @@
    (raindrops n problem))
   ([n {:keys [special-cases default-output-fn] :as problem-map}]
    (if-let [answers (not-empty (divisible-cases n special-cases))]
-     (let [transformed-answers (map transform-answer answers)
+     (let [transformed-answers (map transform-answer answers (take (count answers) (repeat transformation-fns)))
            outputs (map :output transformed-answers)]
        (str/join ", " outputs))
      (default-output-fn n))))
