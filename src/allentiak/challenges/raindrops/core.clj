@@ -163,10 +163,10 @@
 
 (defn- monotone-seq
   "returns an infinite pseudo-random monotone sequence starting at n"
-    [n]
+  [n]
   (iterate
-    #(max % (rand-int (* % (+ 1 (rand 1)))))
-    n))
+   #(max % (rand-int (* % (+ 1 (rand 1)))))
+   n))
 
 (comment
   (take 45 (monotone-seq 22))
@@ -229,8 +229,8 @@
   (do
     (println "Executing...")
     (println
-      (let [sequence (take sample (monotone-seq seed))]
-        (map raindrops sequence)))))
+     (let [sequence (take sample (monotone-seq seed))]
+       (map raindrops sequence)))))
 
 (defn -main [& args]
   (let [{:keys [options exit-message ok?]} (validate-args args)]
