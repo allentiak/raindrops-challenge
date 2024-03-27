@@ -1,6 +1,8 @@
 (ns allentiak.challenges.raindrops.core
   (:gen-class)
-  (:require [clojure.string :as str]))
+  (:require
+   [clojure.string :as str]
+   [clojure.tools.cli :as cli]))
 
 (def ^:private problem
   {:special-cases
@@ -174,7 +176,76 @@
 
   :end)
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Howdy! Invocation args are: " args))
+(def cli-options
+  [["-n" "--sample SAMPLE" "Sample size"
+    :default 10
+    :parse-fn #(Integer/parseInt %)
+    :validate [#(< 0 % Integer/MAX_VALUE) "Must be a number between 0 and Integer/MAX_VALUE"]]
+
+   ["-s" "--seed SEED" "Initial number"
+    :default 1
+    :parse-fn #(Integer/parseInt %)
+    :validate [#(< 0 % Integer/MAX_VALUE) "Must be a number between 0 and Integer/MAX_VALUE"]]
+
+   ["-h" "--help"]])
+
+(defn usage [options-summary]
+  (->> ["This is my program. There are many like it, but this one is mine."
+        ""
+        "Usage: program-name [options] action"
+        ""
+        "Options:"
+        options-summary
+        ""
+        "Please refer to the manual page for more information."]
+       (str/join \newline)))
+
+(defn error-msg [errors]
+  (str "The following errors occurred while parsing your command:\n\n"
+       (str/join \newline errors)))
+
+(defn validate-args
+  "Validate command line arguments. Either return a map indicating the program
+  should exit (with an error message, and optional ok status), or a map
+  indicating the action the program should take and the options provided."
+  [args]
+  (let [{:keys [options arguments errors summary]} (cli/parse-opts args cli-options)]
+    (cond
+      (:help options) ; help => exit OK with usage summary
+      {:exit-message (usage summary) :ok? true}
+      errors ; errors => exit with description of errors
+      {:exit-message (error-msg errors)}
+      (and (= 2 (count options)))
+      {:options options}
+      :else ; failed custom validation => exit with usage summary
+      {:exit-message (usage summary)})))
+
+(defn exit [status msg]
+  (println msg)
+  (System/exit status))
+
+(defn execute
+  [{:keys [sample seed]}]
+  (do
+    (println "Executing...")
+    (println
+      (let [sequence (take sample (monotone-seq seed))]
+        (map raindrops sequence)))))
+
+(defn -main [& args]
+  (let [{:keys [options exit-message ok?]} (validate-args args)]
+    #_(if exit-message
+        (exit (if ok? 0 1) exit-message))
+    (do
+      (println "Parsed Args")
+      (println (cli/parse-opts args cli-options))
+      (println "")
+      (println "Args:")
+      (println args)
+      (println "")
+      (println "Validated args: ")
+      (println (validate-args args))
+      #_(execute (:options (cli/parse-opts args cli-options)))
+      (execute options)
+
+      #_(take n (monotone-seq s)))))
