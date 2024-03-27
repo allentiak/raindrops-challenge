@@ -3,7 +3,7 @@
   (:require
    [clojure.tools.build.api :as b]))
 
-(def lib 'net.clojars.allentiak/challenges)
+(def lib 'net.clojars.allentiak/raindrops)
 (def version "0.1.0-SNAPSHOT")
 (def main 'allentiak.challenges.raindrops.core)
 (def class-dir "target/classes")

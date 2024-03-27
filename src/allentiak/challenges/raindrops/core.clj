@@ -1,6 +1,7 @@
 (ns allentiak.challenges.raindrops.core
   (:gen-class)
   (:require
+   [clojure.pprint :as pprint]
    [clojure.string :as str]
    [clojure.tools.cli :as cli]))
 
@@ -190,14 +191,14 @@
    ["-h" "--help"]])
 
 (defn usage [options-summary]
-  (->> ["This is my program. There are many like it, but this one is mine."
+  (->> ["This is Leandro Doctors' solution to the raindrops coding challenge. There are many like it, but this one is his."
         ""
-        "Usage: program-name [options] action"
+        "Usage: raindrops [options]"
         ""
         "Options:"
         options-summary
         ""
-        "Please refer to the manual page for more information."]
+        "Please refer to the README.md for more information."]
        (str/join \newline)))
 
 (defn error-msg [errors]
@@ -209,13 +210,13 @@
   should exit (with an error message, and optional ok status), or a map
   indicating the action the program should take and the options provided."
   [args]
-  (let [{:keys [options arguments errors summary]} (cli/parse-opts args cli-options)]
+  (let [{:keys [options errors summary]} (cli/parse-opts args cli-options)]
     (cond
       (:help options) ; help => exit OK with usage summary
       {:exit-message (usage summary) :ok? true}
       errors ; errors => exit with description of errors
       {:exit-message (error-msg errors)}
-      (and (= 2 (count options)))
+      (= (count options) 2)
       {:options options}
       :else ; failed custom validation => exit with usage summary
       {:exit-message (usage summary)})))
@@ -226,26 +227,13 @@
 
 (defn execute
   [{:keys [sample seed]}]
-  (do
-    (println "Executing...")
-    (println
-     (let [sequence (take sample (monotone-seq seed))]
-       (map raindrops sequence)))))
+  (let [sequence (take sample (monotone-seq seed))]
+    (println "Printing raining sequence...")
+    (pprint/pprint
+     (map raindrops sequence))))
 
 (defn -main [& args]
   (let [{:keys [options exit-message ok?]} (validate-args args)]
-    #_(if exit-message
-        (exit (if ok? 0 1) exit-message))
-    (do
-      (println "Parsed Args")
-      (println (cli/parse-opts args cli-options))
-      (println "")
-      (println "Args:")
-      (println args)
-      (println "")
-      (println "Validated args: ")
-      (println (validate-args args))
-      #_(execute (:options (cli/parse-opts args cli-options)))
-      (execute options)
-
-      #_(take n (monotone-seq s)))))
+    (if exit-message
+      (exit (if ok? 0 1) exit-message)
+      (execute options))))
