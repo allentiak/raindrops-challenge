@@ -193,7 +193,9 @@
 (defn usage [options-summary]
   (->> ["This is Leandro Doctors' solution to the raindrops coding challenge. There are many like it, but this one is his."
         ""
-        "Usage: raindrops [options]"
+        "Usage: raindrops start [options]"
+        ""
+        "(Yeap: the program won't do anything useful unless you use the command \"start\" :)"
         ""
         "Options:"
         options-summary
@@ -210,13 +212,15 @@
   should exit (with an error message, and optional ok status), or a map
   indicating the action the program should take and the options provided."
   [args]
-  (let [{:keys [options errors summary]} (cli/parse-opts args cli-options)]
+  (let [{:keys [arguments options errors summary]} (cli/parse-opts args cli-options)]
     (cond
       (:help options) ; help => exit OK with usage summary
       {:exit-message (usage summary) :ok? true}
       errors ; errors => exit with description of errors
       {:exit-message (error-msg errors)}
-      (= (count options) 2)
+      ;; custom validation of arguments
+      (and (= (count arguments) 1)
+           (#{"start"} (first arguments)))
       {:options options}
       :else ; failed custom validation => exit with usage summary
       {:exit-message (usage summary)})))
