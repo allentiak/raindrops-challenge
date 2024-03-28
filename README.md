@@ -7,7 +7,7 @@ Leandro Doctors' solution to the "Raindrops" Coding Challenge
 
 ### Usage
 
-Run the project directly, via `:main-opts` (`-m allentiak.<main-ns>`):
+Run the project directly, via `:main-opts` (`-m allentiak.challenges.raindrops.core`):
 
     $ clojure -M:run-m
 
@@ -57,7 +57,7 @@ If not, see <http://www.gnu.org/licenses/>.
 If you modify this Program, or any covered work, by linking or combining it with Clojure (or a modified version of that library), containing parts covered by the terms of the Eclipse Public License (EPL), the licensors of this Program grant you additional permission to convey the resulting work.
 Corresponding Source for a non-source form of such a combination shall include the source code for the parts of Clojure used as well as that of the covered work.
 
-### Warranty Disclaimer
+#### Warranty Disclaimer
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU Affero General Public License for more details.
