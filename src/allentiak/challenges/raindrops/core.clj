@@ -7,17 +7,21 @@
 
 (def ^:private problem
   {:special-cases
-   #{{:divisor 2 :base-output "pling"}
-     {:divisor 3 :base-output "plang"}
-     {:divisor 5 :base-output "plong"}
+   #{{:divisor 2  :base-output "pling"}
+     {:divisor 3  :base-output "plang"}
+     {:divisor 5  :base-output "plong"}
      {:divisor 17 :base-output "tshäng"}}
    :default-output-fn
    (constantly "blob")
    :transformation-fns
-   `[identity
-     first-transformation
-     second-transformation
-     third-transformation]})
+   [:identity
+    :louder
+    :even-louder
+    :louder-normal]})
+
+(defmethod transformation :identity (fn [n] identity))
+(defmethod transformation :louder   (fn [n] identity))
+(defmethod transformation :default  (fn [n] "blob"))
 
 (def ^:private special-cases
   (:special-cases problem))
@@ -59,7 +63,13 @@
   :end)
 
 (defn- divisible-cases
-  "given a positive integer and an seq of SpecialCase's, return a seq of Answers, consisting in only the fields ':divisor', ':base-output', and ':times-divisible' of the SpecialCases to which the integer is divisible by"
+  "given a positive integer and an seq of special-case maps,
+  return a seq of answer maps.
+  an answer map has keys:
+  - ':divisor',
+  - ':base-output'
+  - ':times-divisible'
+  of the SpecialCases to which the integer is divisible by"
   [n special-cases]
   (let [augmented-special-cases (augment-special-cases n special-cases)]
     (map #(dissoc % :divisible) (filter :divisible augmented-special-cases))))
@@ -112,7 +122,7 @@
   (let [idx (dec
              (min times-divisible
                   (count transformation-fns-vector)))
-        f (resolve (nth transformation-fns-vector idx))]
+        f   (resolve (nth transformation-fns-vector idx))]
     {:output (f base-output)}))
 
 (comment
@@ -129,13 +139,29 @@
   ;; => {:output "*PLING* pling"}
   :end)
 
+
+;; what's a case?
+;; a map.
+;; what's special-cases?
+;; set of maps.
+;; what's a sound?
+;; what's produce?
+;; what's 'blob'
+
+"given a natural integer and a set of cases, return a specific sound for each case.
+ a case is a map.
+ 
+ and 'blob'"
+
 (defn raindrops
   "given a natural integer, produce a specific sound for special cases, and 'blob' for the rest"
   ([n]
    (raindrops n problem))
   ([n {:keys [special-cases default-output-fn] :as problem-map}]
    (if-let [answers (not-empty (divisible-cases n special-cases))]
-     (let [transformed-answers (map transform-answer answers (take (count answers) (repeat transformation-fns)))
+     (let [transformed-answers (map transform-answer answers
+                                    (take (count answers)
+                                          (repeat transformation-fns)))
            outputs (map :output transformed-answers)]
        (str/join ", " outputs))
      (default-output-fn n))))
