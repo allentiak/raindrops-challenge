@@ -31,8 +31,18 @@
   (zero? (mod n divisor)))
 
 (defn- how-many-times [n divisor]
-  (if (divisible? n divisor)
-    (/ n divisor) 0))
+  (if-not (divisible? n divisor)
+    0
+    (loop [cnt 1
+           num n]
+      (if (divisible? (/ num divisor) divisor)
+        (recur (inc cnt) (/ num divisor))
+        cnt))))
+
+(comment
+  (map (partial how-many-times 128) [2 3 5 17])
+;; => (7 0 0 0)
+  :end)
 
 (defn- add-divisible-fields
   "given an integer and a special case map, return an augmented map with the new keys: ':divisible' with the result of applying 'divisible?' to the inteeger and the special case, and ':times-divisible' with how many times it is divisible"
@@ -70,6 +80,8 @@
   ;; => ({:divisor 2, :base-output "pling", :times-divisible 2})
   (divisible-cases 6 special-cases)
   ;; => ({:divisor 2, :base-output "pling", :times-divisible 3} {:divisor 3, :base-output "plang", :times-divisible 2})
+  (divisible-cases 128 special-cases)
+;; => ({:divisor 2, :base-output "pling", :times-divisible 7})
   :end)
 
 (defn- first-transformation
@@ -125,9 +137,9 @@
   (transform-answer (first (divisible-cases 4 special-cases)) transformation-fns)
   ;; => {:output "PLING"}
   (transform-answer (first (divisible-cases 6 special-cases)) transformation-fns)
-  ;; => {:output "*PLING*"}
+  ;; => {:output "pling"}
   (transform-answer (first (divisible-cases 8 special-cases)) transformation-fns)
-  ;; => {:output "*PLING* pling"}
+  ;; => {:output "*PLING*"}
   :end)
 
 (defn raindrops
