@@ -30,15 +30,16 @@
   [n divisor]
   (zero? (mod n divisor)))
 
+(defn- how-many-times [n divisor]
+  (if (divisible? n divisor)
+    (/ n divisor) 0))
+
 (defn- add-divisible-fields
   "given an integer and a special case map, return an augmented map with the new keys: ':divisible' with the result of applying 'divisible?' to the inteeger and the special case, and ':times-divisible' with how many times it is divisible"
   [n special-case]
   (let [d? (divisible? n (:divisor special-case))
-        case-with-divisible (assoc special-case :divisible d?)
-        how-many-times (if d?
-                         (/ n (:divisor special-case))
-                         0)]
-    (assoc case-with-divisible :times-divisible how-many-times)))
+        case-with-divisible (assoc special-case :divisible d?)]
+    (assoc case-with-divisible :times-divisible (how-many-times n (:divisor special-case)))))
 
 (comment
   (add-divisible-fields 4 (first special-cases))
