@@ -137,7 +137,7 @@ The number of divisions is also important:
 93 = plang
 94 = pling
 95 = plong
-96 = *PLING*, PLING, plang
+96 = *PLING*, PLING, plang ;; this one is wrong: it should be "pling, *PLING*, pling, plang"
 (...)
 111 = plang
 112 = *PLING*, pling

@@ -7,17 +7,27 @@
 
 (def ^:private problem
   {:special-cases
-   #{{:divisor 2 :base-output "pling"}
-     {:divisor 3 :base-output "plang"}
-     {:divisor 5 :base-output "plong"}
-     {:divisor 17 :base-output "tshäng"}}
+   (sort-by :divisor
+            #{{:divisor 2 :base-output "pling"}
+              {:divisor 3 :base-output "plang"}
+              {:divisor 5 :base-output "plong"}
+              {:divisor 17 :base-output "tshäng"}})
    :default-output-fn
    (constantly "blob")
    :transformation-fns
-   `[identity
+   `[default-response
+     identity
      first-transformation
      second-transformation
      third-transformation]})
+
+(defn default-response [n]
+  "blob")
+
+(comment
+  (:special-cases problem)
+;; => ({:divisor 2, :base-output "pling"} {:divisor 3, :base-output "plang"} {:divisor 5, :base-output "plong"} {:divisor 17, :base-output "tshäng"})
+  :end)
 
 (def ^:private special-cases
   (:special-cases problem))
@@ -41,7 +51,9 @@
 
 (comment
   (map (partial how-many-times 128) [2 3 5 17])
-;; => (7 0 0 0)
+  ;; => (7 0 0 0)
+  (map (partial how-many-times 80) [2 3 5 17])
+  ;; => (4 0 1 0)
   :end)
 
 (defn- add-divisible-fields
@@ -56,6 +68,8 @@
   ;; => {:divisor 17, :base-output "tshäng", :divisible false, :times-divisible 0}
   (add-divisible-fields 4 (second special-cases))
   ;; => {:divisor 2, :base-output "pling", :divisible true, :times-divisible 2}
+  (add-divisible-fields 8 (first special-cases))
+;; => {:divisor 17, :base-output "tshäng", :divisible false, :times-divisible 0}
   :end)
 
 (defn- augment-special-cases
@@ -94,7 +108,8 @@
 
 (defn- third-transformation
   [s]
-  (str/join " " (list (second-transformation s) s)))
+  (str/join ", " (list (second-transformation s) s)))
+
 
 (comment
   (:special-cases problem)
@@ -114,21 +129,35 @@
   ;; => ("*TSHÄNG*" "*PLING*" "*PLANG*" "*PLONG*")
 
   (map third-transformation sounds)
-  ;; => ("*TSHÄNG* tshäng" "*PLING* pling" "*PLANG* plang" "*PLONG* plong")
+  ;; => ("*TSHÄNG*, tshäng" "*PLING*, pling" "*PLANG*, plang" "*PLONG*, plong")
 
   :end)
 
 (defn- transform-answer
   "given an answer map (with ':divisor', ':base-output', and ':times-divisible'), and a transformation fns vector, return an output map.
-  This map has the key ':output', which contains the list of outputs"
+  This map has the key ':output', which contains the list of outputs."
   [{:keys [base-output times-divisible] :as answer} transformation-fns-vector]
-  (let [idx (dec
-             (min times-divisible
-                  (count transformation-fns-vector)))
-        f (resolve (nth transformation-fns-vector idx))]
-    {:output (f base-output)}))
+  (loop [out []
+         t times-divisible]
+    (let [c (count transformation-fns-vector)
+          last-fn (resolve (nth transformation-fns-vector (dec c)))
+          f (resolve (nth transformation-fns-vector (mod t c)))]
+        (if (< t c)
+          {:output (str/join ", "(reverse (conj out (f base-output))))}
+          (recur (conj out (last-fn base-output)) (- t (dec c)))))))
+
 
 (comment
+  (resolve (nth transformation-fns 3))
+;; => #'allentiak.challenges.raindrops.core/second-transformation
+  (resolve (nth transformation-fns 0))
+  problem
+  (mod 0 7)
+  (nat-int? 0)
+;; => true
+  (pos-int? 0)
+;; => false
+  ((resolve (nth transformation-fns 4)) "sssss")
   (first (divisible-cases 2 special-cases))
   ;; => {:divisor 2, :base-output "pling", :times-divisible 1}
 
@@ -138,8 +167,28 @@
   ;; => {:output "PLING"}
   (transform-answer (first (divisible-cases 6 special-cases)) transformation-fns)
   ;; => {:output "pling"}
+  (divisible? 8 2)
+;; => true
+  (how-many-times 8 2)
+;; => 3
   (transform-answer (first (divisible-cases 8 special-cases)) transformation-fns)
   ;; => {:output "*PLING*"}
+  (how-many-times 32 2)
+;; => 5
+  (how-many-times 16 2)
+;; => 4
+  (transform-answer (first (divisible-cases 16 special-cases)) transformation-fns)
+;; => {:output "*PLING*, pling"}
+  (transform-answer (first (divisible-cases 32 special-cases)) transformation-fns)
+  (how-many-times 96 2)
+  (/ 96 2)
+  (/ 48 2)
+  (/ 24 2)
+  (/ 12 2)
+  (/ 6 2)
+  (transform-answer (first (divisible-cases 96 special-cases)) transformation-fns)
+  (transform-answer (first (divisible-cases 128 special-cases)) transformation-fns)
+;; => {:output "PLING, *PLING*, pling"}
   :end)
 
 (defn raindrops

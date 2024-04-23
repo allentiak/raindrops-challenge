@@ -26,6 +26,8 @@
   (expecting "combining different transformations"
              (expect (= (sut/raindrops 6) "pling, plang"))
              (expect (= (sut/raindrops 10) "pling, plong"))
+             (expect (= (sut/raindrops 80) "*PLING*, pling, plong"))
+             (expect (= (sut/raindrops 96) "pling, *PLING*, pling, plang"))
              (expect (= (sut/raindrops 128) "*PLING*, *PLING*, pling"))
              #_(expect (= (sut/raindrops 34) "*PLING* pling, TSHÄNG"))
              #_(expect (= (sut/raindrops 510) "*PLING* pling, *PLANG* plang, *PLONG* plong, *TSHÄNG* tshäng"))))
