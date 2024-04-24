@@ -10,3 +10,10 @@
     17 "tshäng"
     "blob"))
 
+(defn times-divisible
+  [n divisor]
+  (loop [cnt 0
+         num n]
+    (if-not (zero? (mod num divisor))
+      cnt
+      (recur (inc cnt) (/ num divisor)))))
