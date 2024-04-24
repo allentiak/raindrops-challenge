@@ -1,5 +1,7 @@
 (ns allentiak.challenges.raindrops.core
-  (:gen-class))
+  (:gen-class)
+  (:require
+   [clojure.string :as str]))
 
 (defn- times-divisible
   "given two integers, 'n' and 'divisor',
@@ -21,6 +23,9 @@
     (zipmap divisors)
     (filter #(pos? (val %)))))
 
+(divisor-pairs 54 [2 3 5 17])
+;; => ([2 1] [3 3])
+
 (defn- int->base-sound
   "given an integer,
   return its predefined sound as per the problem definition"
@@ -31,3 +36,22 @@
     5 "plong"
     17 "tshäng"
     "blob"))
+
+(defn- divisor-pair->output
+  [[divisor times]]
+  (let [base-sound (int->base-sound divisor)]
+    (condp = times
+      1 base-sound
+      2 (str/upper-case base-sound)
+      3 (str "*" (str/upper-case base-sound) "*")
+      4 (str/join ", " (list (str "*" (str/upper-case base-sound) "*") base-sound))
+     "we only have 4 transformations defined so far")))
+
+(defn raindrops
+  [n]
+  (let [divisors [2 3 5 17]]
+    (->>
+      divisors
+      (divisor-pairs n)
+      (map divisor-pair->output)
+      (str/join ", "))))
