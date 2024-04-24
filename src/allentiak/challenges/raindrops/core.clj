@@ -1,7 +1,7 @@
 (ns allentiak.challenges.raindrops.core
   (:gen-class))
 
-(defn int->base-sound
+(defn- int->base-sound
   "given an integer,
   return its predefined sound as per the problem definition"
   [n]
@@ -12,7 +12,7 @@
     17 "tshäng"
     "blob"))
 
-(defn times-divisible
+(defn- times-divisible
   "given two integers, 'n' and 'divisor',
   return how many times is 'n' divisible by 'divisor'"
   [n divisor]
@@ -22,7 +22,7 @@
       cnt
       (recur (inc cnt) (/ num divisor)))))
 
-(defn divisor-pairs
+(defn- divisor-pairs
   "given an integer and a list of divisors,
   return divisor, times-divisible pairs"
   [n divisors]
