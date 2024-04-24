@@ -1,7 +1,9 @@
 (ns allentiak.challenges.raindrops.core
   (:gen-class))
 
-(defn base-output
+(defn int->base-sound
+  "given an integer,
+  return its predefined sound as per the problem definition"
   [n]
   (condp = n
     2 "pling"
@@ -11,6 +13,8 @@
     "blob"))
 
 (defn times-divisible
+  "given two integers, 'n' and 'divisor',
+  return how many times is 'n' divisible by 'divisor'"
   [n divisor]
   (loop [cnt 0
          num n]
