@@ -49,9 +49,10 @@
 
 (defn raindrops
   [n]
-  (let [divisors [2 3 5 17]]
-    (->>
-      divisors
-      (divisor-pairs n)
-      (map divisor-pair->output)
-      (str/join ", "))))
+  (let [divisors [2 3 5 17]
+        output   (->>
+                   divisors
+                   (divisor-pairs n)
+                   (map divisor-pair->output)
+                   (str/join ", "))]
+    (if (empty? output) "blob" output)))
