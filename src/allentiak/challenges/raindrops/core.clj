@@ -21,3 +21,13 @@
     (if-not (zero? (mod num divisor))
       cnt
       (recur (inc cnt) (/ num divisor)))))
+
+(defn divisor-pairs
+  "given an integer and a list of divisors,
+  return divisor, times-divisible pairs"
+  [n divisors]
+  (->>
+    divisors
+    (map (partial times-divisible n))
+    (zipmap divisors)
+    (filter #(pos? (val %)))))
