@@ -4,7 +4,7 @@
    [clojure.tools.build.api :as b]))
 
 (def lib 'net.clojars.allentiak/raindrops)
-(def version "0.1.0-SNAPSHOT")
+(def version "0.3.0-SNAPSHOT")
 (def main 'allentiak.challenges.raindrops.cli)
 (def class-dir "target/classes")
 

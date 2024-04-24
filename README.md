@@ -29,7 +29,7 @@ from `build.clj`.
 
 Run that uberjar:
 
-    $ java -jar target/net.clojars.allentiak/raindrops-0.1.0-SNAPSHOT.jar
+    $ java -jar target/net.clojars.allentiak/raindrops-0.3.0-SNAPSHOT.jar
 
 
 ### Hacking
