@@ -40,12 +40,14 @@
 (defn- divisor-pair->output
   [[divisor times]]
   (let [base-sound (int->base-sound divisor)]
-    (condp = times
-      1 base-sound
-      2 (str/upper-case base-sound)
-      3 (str "*" (str/upper-case base-sound) "*")
-      4 (str/join ", " (list (str "*" (str/upper-case base-sound) "*") base-sound))
-     "we only have 4 transformations defined so far")))
+    (loop [t times
+           output []]
+      (condp = t
+        1 (str/join ", " (reverse (conj output base-sound)))
+        2 (str/join ", " (reverse (conj output (str/upper-case base-sound))))
+        3 (str/join ", " (reverse (conj output (str "*" (str/upper-case base-sound) "*"))))
+        4 (str/join ", " (reverse (conj output (str/join ", " (list (str "*" (str/upper-case base-sound) "*") base-sound)))))
+        (recur (- t 4) (conj output (str/join ", " (list (str "*" (str/upper-case base-sound) "*") base-sound))))))))
 
 (defn raindrops
   [n]
