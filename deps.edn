@@ -3,7 +3,7 @@
          org.clojure/tools.cli {:mvn/version "1.1.230"}}
 
  :aliases
- {:run-m {:main-opts ["-m" "allentiak.challenges.raindrops.core"]}
+ {:run-m {:main-opts ["-m" "allentiak.challenges.raindrops.cli"]}
   :build {:deps       {io.github.clojure/tools.build {:mvn/version "0.10.0"}}
           :ns-default build}
 

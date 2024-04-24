@@ -7,7 +7,7 @@ Leandro Doctors' solution to the "Raindrops" Coding Challenge
 
 ### Usage
 
-Run the project directly, via `:main-opts` (`-m allentiak.challenges.raindrops.core`):
+Run the project directly, via `:main-opts` (`-m allentiak.challenges.raindrops.cli`):
 
     $ clojure -M:run-m
 
