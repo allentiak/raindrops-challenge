@@ -13,6 +13,11 @@
       cnt
       (recur (inc cnt) (/ num divisor)))))
 
+(comment
+  (times-divisible 9 3)
+  ;; => 2
+  :end)
+
 (defn- divisor-pairs
   "Given an integer n and a list of divisors,
   return pairs [divisor times-divisible]
@@ -27,6 +32,9 @@
 (comment
   (divisor-pairs 54 [2 3 5 17])
   ;; => ([2 1] [3 3])
+
+  (divisor-pairs 96 [2 3 5 17])
+  ;; => ([2 5] [3 1])
   :end)
 
 (defn- int->base-sound
@@ -53,6 +61,17 @@
         3 (str/join ", " (reverse (conj output (str "*" (str/upper-case base-sound) "*"))))
         4 (str/join ", " (reverse (conj output (str/join ", " (list (str "*" (str/upper-case base-sound) "*") base-sound)))))
         (recur (- t 4) (conj output (str/join ", " (list (str "*" (str/upper-case base-sound) "*") base-sound))))))))
+
+(comment
+  (divisor-pair->output [3 3])
+  ;; => "*PLANG*"
+  (divisor-pair->output [3 4])
+  ;; => "*PLANG*, plang"
+  (divisor-pair->output [3 5])
+  ;; => "plang, *PLANG*, plang"
+  (divisor-pair->output [3 8])
+  ;; => "*PLANG*, plang, *PLANG*, plang"
+  :end)
 
 (defn raindrops
   "Given an integer,
