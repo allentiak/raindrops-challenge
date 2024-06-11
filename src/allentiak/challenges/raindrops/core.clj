@@ -19,10 +19,10 @@
   for each divisor by which n is divisible."
   [n divisors]
   (->>
-    divisors
-    (map (partial times-divisible n))
-    (zipmap divisors)
-    (filter #(pos? (val %)))))
+   divisors
+   (map (partial times-divisible n))
+   (zipmap divisors)
+   (filter #(pos? (val %)))))
 
 (comment
   (divisor-pairs 54 [2 3 5 17])
@@ -60,8 +60,8 @@
   [n]
   (let [divisors [2 3 5 17]
         output   (->>
-                   divisors
-                   (divisor-pairs n)
-                   (map divisor-pair->output)
-                   (str/join ", "))]
+                  divisors
+                  (divisor-pairs n)
+                  (map divisor-pair->output)
+                  (str/join ", "))]
     (if (empty? output) "blob" output)))

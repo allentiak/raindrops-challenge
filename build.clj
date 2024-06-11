@@ -8,19 +8,17 @@
 (def main 'allentiak.challenges.raindrops.cli)
 (def class-dir "target/classes")
 
-
 (defn test
   "Run all the tests."
   [opts]
   (let [basis    (b/create-basis {:aliases [:test]})
         cmds     (b/java-command
-                   {:basis     basis
-                    :main      'clojure.main
-                    :main-args ["-m" "kaocha.runner"]})
+                  {:basis     basis
+                   :main      'clojure.main
+                   :main-args ["-m" "kaocha.runner"]})
         {:keys [exit]} (b/process cmds)]
     (when-not (zero? exit) (throw (ex-info "Tests failed" {}))))
   opts)
-
 
 (defn- uber-opts
   [opts]
@@ -31,7 +29,6 @@
          :class-dir class-dir
          :src-dirs ["src"]
          :ns-compile [main]))
-
 
 (defn ci
   "Run the CI pipeline of tests (and build the uberjar)."
