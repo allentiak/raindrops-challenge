@@ -1,8 +1,8 @@
 (ns allentiak.challenges.raindrops.cli
   (:gen-class)
   (:require
-   [allentiak.challenges.raindrops.core :refer [monotone-seq
-                                                raindrops]]
+   [allentiak.challenges.raindrops.core :refer [raindrops]]
+   [allentiak.challenges.raindrops.sequence :refer [monotone-seq]]
    [clojure.pprint :as pprint]
    [clojure.string :as str]
    [clojure.tools.cli :as cli]))
